@@ -1,0 +1,12 @@
+{
+  "name": "music-back-mysql",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "start": "node ./bin/www",
+    "findMusic": "node findMusic"
+  },
+  "author": "",
+  "license": "ISC"
+}
