@@ -33,7 +33,7 @@ router.get('/', function(req, res, next) {
 // 专辑查询
 router.get('/albumList', function(req, res, next) {
     pool.getConnection((err, conn)=> {
-        const sql = `select * from album limit ${req.query.pageNo},${req.query.pageSize}`;//查询jd_user表中的用户
+        const sql = `select * from album where album_name like '%${req.query.keyword || '%'}%' limit ${req.query.pageNo},${req.query.pageSize}`;//查询jd_user表中的用户
         conn.query(sql, async(err, result)=>{
             if (err) throw err;
             await res.send({
@@ -100,10 +100,28 @@ router.get('/albumDetails', function(req, res, next) {
 // 歌手
 router.get('/singerList', function(req, res, next) {
     pool.getConnection((err, conn)=> {
-        const sql = `select * from singer limit ${req.query.limit}`;//查询jd_user表中的用户
+        const sql = `select * from singer where name like '%${req.query.keyword || '%'}%' limit ${req.query.pageNo},${req.query.pageSize}`;//查询jd_user表中的用户
+        conn.query(sql, async (err, result) => {
+            if (err) throw err;
+            res.send({
+                code: 200,
+                msg: 'success',
+                data: result,
+            });
+            // console.log('result',result);
+            conn.release();//数据查询成功后归还连接
+        })
+    })
+
+});
+
+// 歌手
+router.get('/songList', function (req, res, next) {
+    pool.getConnection((err, conn) => {
+        const sql = `select * from song where title like '%${req.query.keyword || '%'}%' limit ${req.query.pageNo},${req.query.pageSize}`;//查询jd_user表中的用户
         conn.query(sql, async(err, result)=>{
             if (err) throw err;
-            await res.send({
+            res.send({
                 code: 200,
                 msg: 'success',
                 data:result,

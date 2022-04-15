@@ -28,7 +28,11 @@ var musicName=[];
             fPath = getFileName(fPath);
             if(stats.isFile()){
                 if (spath.extname(fPath).toLowerCase() !== '.mp3') return;
-            //   console.log('fPath',fPath); 
+                // console.log('fPath', fPath);
+                let aaa = fPath.split('\\');
+                let bbb = aaa[aaa.length - 1].split('mp3')[0];
+                let ccc = bbb.substring(0, bbb.length - 1);
+
                 let tags = NodeID3.read(fPath)
                 let mdata = {}
 
@@ -46,7 +50,7 @@ var musicName=[];
                 let data = {
                     fPath:fPath,
                     album:tags.album||tags.raw.TALB,
-                    title:tags.title||tags.raw.TPE2,
+                    title: tags.title || tags.raw.TPE2 || ccc,
                     artist:tags.artist||tags.raw.TPE1,
                     trackNumber:tags.trackNumber||tags.raw.TRCK,
                     duration:mdata?.format?.duration
