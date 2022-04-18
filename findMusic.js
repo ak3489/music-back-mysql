@@ -67,7 +67,7 @@ var musicName=[];
     return musicName;
 }
 let fileNames = findSync('./musics');
-console.log('fileNames',fileNames);
+// console.log('fileNames',fileNames);
 // let albumValues = [];
 // let singerValues = [];
 // let singerAlbumValues = [];
@@ -83,6 +83,7 @@ pool.getConnection(async (err, conn)=> {
 
     //处理歌手
     function dosinger(i,album_id){
+        // console.log('iiiiiiiiiiii', i);
         //处理歌手
         let selectsinger = `select * from singer WHERE name = '${fileNames[i].artist||'undefined'}' `;//查询singer表中的歌手
         conn.query(selectsinger, async(err, result)=>{
@@ -95,6 +96,7 @@ pool.getConnection(async (err, conn)=> {
                     // console.log(`添加歌手-${fileNames[i].artist}-成功`)
                     singer_id = result.insertId;
                     // console.table({'album_id':album_id,'singer_id':singer_id})
+
                     dosingeralbum(album_id,singer_id);
                     dosong(singer_id,i,album_id);
                 })
@@ -113,11 +115,12 @@ pool.getConnection(async (err, conn)=> {
         //处理歌手
         let sql = `select * from singer_album WHERE album_id = '${album_id}' AND singer_id = '${singer_id}' `;
         // let sql = 'SELECT * FROM `singer_album` WHERE `album_id` = album_id AND `singer_id` = singer_id';
-        conn.query(sql, async(err, result)=>{
+        conn.query(sql, (err, result) => {
             if (err) throw err;
+            console.log('dosingeralbum result', result);
             if(result.length==0){
-                // console.log('dosingeralbum album_id',album_id);
-                // console.log('dosingeralbum singer_id',singer_id);
+                console.log('dosingeralbum album_id', album_id);
+                console.log('dosingeralbum singer_id', singer_id);
                 const addsql = "insert into singer_album values(null,?,?)";//写追加数据的sql变量可用"?"占位，追加的字段数量要与刚才查询的字段数量一致，否则会报错 now()
                 conn.query(addsql,[album_id,singer_id],async(error,result)=>{//数组中放我们传入的变量会自动替换"?"
                     if(error) throw error;
@@ -125,7 +128,7 @@ pool.getConnection(async (err, conn)=> {
                     // console.log('result',result);
                 })
             }else{
-                // console.log('已经存在',result);
+                console.log('singeralbum已经存在');
             }
         })
     }
@@ -167,7 +170,7 @@ pool.getConnection(async (err, conn)=> {
                 const addsql = "insert into song_singer values(null,?,?)";//写追加数据的sql变量可用"?"占位，追加的字段数量要与刚才查询的字段数量一致，否则会报错 now()
                 conn.query(addsql,[song_id,singer_id],async(error,result)=>{//数组中放我们传入的变量会自动替换"?"
                     if(error) throw error;
-                    console.log(`添加成功`)
+                    console.log(`dosongsinger 添加成功`)
                     // console.log('result',result);
                 })
             }else{
