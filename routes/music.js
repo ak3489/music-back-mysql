@@ -34,7 +34,7 @@ router.get('/', function(req, res, next) {
 router.get('/albumList', function(req, res, next) {
     pool.getConnection((err, conn)=> {
         const count = `select count(*) as total from album`;
-        const sql = `select * from album where album_name like '%${req.query.keyword || '%'}%' limit ${req.query.pageNo},${req.query.pageSize}`;//查询jd_user表中的用户
+        const sql = `select * from album where album_name like '%${req.query.keyword || '%'}%' limit ${(req.query.pageNo - 1) * req.query.pageSize},${req.query.pageSize}`;//查询jd_user表中的用户
         conn.query(`${sql};${count}`, async (err, result) => {
             if (err) throw err;
             // console.log('result', result[1]);
@@ -103,7 +103,7 @@ router.get('/albumDetails', function(req, res, next) {
 router.get('/singerList', function(req, res, next) {
     pool.getConnection((err, conn)=> {
         const count = `select count(*) as total from singer`;
-        const sql = `select * from singer where name like '%${req.query.keyword || '%'}%' limit ${req.query.pageNo},${req.query.pageSize}`;//查询jd_user表中的用户
+        const sql = `select * from singer where name like '%${req.query.keyword || '%'}%' limit ${(req.query.pageNo - 1) * req.query.pageSize},${req.query.pageSize}`;//查询jd_user表中的用户
         conn.query(`${sql};${count}`, async (err, result) => {
             if (err) throw err;
             res.send({
@@ -123,7 +123,7 @@ router.get('/songList', function (req, res, next) {
     // console.log('req', req.query.pageSize);
     pool.getConnection((err, conn) => {
         const count = `select count(*) as total from song`;
-        const sql = `select * from song where title like '%${req.query.keyword || '%'}%' limit ${req.query.pageNo - 1},${req.query.pageSize}`;//查询jd_user表中的用户
+        const sql = `select * from song where title like '%${req.query.keyword || '%'}%' limit ${(req.query.pageNo - 1) * req.query.pageSize},${req.query.pageSize}`;//查询jd_user表中的用户
         conn.query(`${sql};${count}`, async (err, result) => {
             // console.log('result', result);
             if (err) throw err;
