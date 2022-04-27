@@ -33,13 +33,15 @@ router.get('/', function(req, res, next) {
 // 专辑查询
 router.get('/albumList', function(req, res, next) {
     pool.getConnection((err, conn)=> {
+        const count = `select count(*) as total from album`;
         const sql = `select * from album where album_name like '%${req.query.keyword || '%'}%' limit ${req.query.pageNo},${req.query.pageSize}`;//查询jd_user表中的用户
-        conn.query(sql, async(err, result)=>{
+        conn.query(`${sql};${count}`, async (err, result) => {
             if (err) throw err;
+            // console.log('result', result[1]);
             await res.send({
                 code: 200,
                 msg: 'success',
-                data:result,
+                data: { list: result[0], total: result[1][0].total, totalPage: Math.ceil(result[1][0].total / req.query.pageSize) },
             });
             // console.log('result',result);
             conn.release();//数据查询成功后归还连接
@@ -100,13 +102,14 @@ router.get('/albumDetails', function(req, res, next) {
 // 歌手
 router.get('/singerList', function(req, res, next) {
     pool.getConnection((err, conn)=> {
+        const count = `select count(*) as total from singer`;
         const sql = `select * from singer where name like '%${req.query.keyword || '%'}%' limit ${req.query.pageNo},${req.query.pageSize}`;//查询jd_user表中的用户
-        conn.query(sql, async (err, result) => {
+        conn.query(`${sql};${count}`, async (err, result) => {
             if (err) throw err;
             res.send({
                 code: 200,
                 msg: 'success',
-                data: result,
+                data: { list: result[0], total: result[1][0].total, totalPage: Math.ceil(result[1][0].total / req.query.pageSize) },
             });
             // console.log('result',result);
             conn.release();//数据查询成功后归还连接
@@ -115,16 +118,19 @@ router.get('/singerList', function(req, res, next) {
 
 });
 
-// 歌手
+// songList
 router.get('/songList', function (req, res, next) {
+    // console.log('req', req.query.pageSize);
     pool.getConnection((err, conn) => {
-        const sql = `select * from song where title like '%${req.query.keyword || '%'}%' limit ${req.query.pageNo},${req.query.pageSize}`;//查询jd_user表中的用户
-        conn.query(sql, async(err, result)=>{
+        const count = `select count(*) as total from song`;
+        const sql = `select * from song where title like '%${req.query.keyword || '%'}%' limit ${req.query.pageNo - 1},${req.query.pageSize}`;//查询jd_user表中的用户
+        conn.query(`${sql};${count}`, async (err, result) => {
+            // console.log('result', result);
             if (err) throw err;
             res.send({
                 code: 200,
                 msg: 'success',
-                data:result,
+                data: { list: result[0], total: result[1][0].total, totalPage: Math.ceil(result[1][0].total / req.query.pageSize) },
             });
             // console.log('result',result);
             conn.release();//数据查询成功后归还连接

@@ -1,8 +1,8 @@
 /*
  * @Author: your name
  * @Date: 2022-04-06 10:08:27
- * @LastEditTime: 2022-04-18 15:16:45
- * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2022-04-27 10:38:57
+ * @gcz: gcz
  * @Description: 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  * @FilePath: \music-back-mysql\app.js
  */
@@ -55,21 +55,22 @@ app.use(function(err, req, res, next) {
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
 
+  console.log('app.js req', req);
   // render the error page
   res.status(err.status || 500);
   res.render('error');
 });
 
 //监听文件变化
-const chokidar = require('chokidar')
-chokidar.watch('./musics/', {
-  persistent: true,
-  ignored: /(^|[\/\\])\../, // 忽略点文件
-  // cwd: '.', // 表示当前目录
-  depth: 10 // 只监听当前目录不包括子目录
-}).on('all', (event, path) => {//监听除了ready, raw, and error之外所有的事件类型
-  console.log(event, path);
-});
+// const chokidar = require('chokidar')
+// chokidar.watch('./musics/', {
+//   persistent: true,
+//   ignored: /(^|[\/\\])\../, // 忽略点文件
+//   // cwd: '.', // 表示当前目录
+//   depth: 10 // 只监听当前目录不包括子目录
+// }).on('all', (event, path) => {//监听除了ready, raw, and error之外所有的事件类型
+//   console.log(event, path);
+// });
 
 
 
